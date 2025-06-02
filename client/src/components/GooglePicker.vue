@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { loadGoogleApis } from '@/utils/google'; // utils/google.js
+import { loadGoogleApis } from '@/utils/google';
 
 /* global gapi, google */
 export default {
@@ -18,6 +18,7 @@ export default {
       pickerApiLoaded: false,
       tokenClient: null,
       oauthToken: null,
+      requestedSilently: false,
     };
   },
   async mounted() {
@@ -42,17 +43,28 @@ export default {
       },
     });
   },
+
   methods: {
     onPickerApiLoad() {
       this.pickerApiLoaded = true;
     },
+
     onPick() {
+      // First try: silent (no prompt), works if user previously consented
+      if (!this.requestedSilently) {
+        this.requestedSilently = true;
+        this.tokenClient.requestAccessToken({ prompt: '' });
+        return;
+      }
+
+      // Second attempt (silent failed): show consent popup
       if (!this.oauthToken) {
         this.tokenClient.requestAccessToken({ prompt: 'consent' });
       } else {
         this.createPicker();
       }
     },
+
     createPicker() {
       if (this.pickerApiLoaded && this.oauthToken) {
         const picker = new google.picker.PickerBuilder()
@@ -67,6 +79,7 @@ export default {
         console.warn('Picker not ready');
       }
     },
+
     pickerCallback(data) {
       if (data.action === google.picker.Action.PICKED) {
         const file = data.docs[0];
