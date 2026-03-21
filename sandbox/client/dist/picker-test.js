@@ -7,7 +7,7 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // client/shared/google/sdk/loadGoogleApis.js
+  // frontend/sdk/loadGoogleApis.js
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       const existing = document.querySelector(`script[src="${src}"]`);
@@ -66,14 +66,14 @@
   }
   var gisScriptPromise, gapiScriptPromise, pickerApiPromise;
   var init_loadGoogleApis = __esm({
-    "client/shared/google/sdk/loadGoogleApis.js"() {
+    "frontend/sdk/loadGoogleApis.js"() {
       gisScriptPromise = null;
       gapiScriptPromise = null;
       pickerApiPromise = null;
     }
   });
 
-  // client/shared/google/auth/tokenClient.js
+  // frontend/auth/tokenClient.js
   function buildConfigKey(config) {
     return JSON.stringify({
       clientId: config.clientId,
@@ -119,7 +119,7 @@
   }
   var tokenClient, currentAccessToken, currentConfigKey, CONSENT_KEY;
   var init_tokenClient = __esm({
-    "client/shared/google/auth/tokenClient.js"() {
+    "frontend/auth/tokenClient.js"() {
       tokenClient = null;
       currentAccessToken = null;
       currentConfigKey = null;
@@ -127,7 +127,7 @@
     }
   });
 
-  // client/shared/google/picker/openPicker.js
+  // frontend/picker/openPicker.js
   function normalizePickedFile(doc) {
     return {
       fileId: doc.id,
@@ -180,15 +180,15 @@
     });
   }
   var init_openPicker = __esm({
-    "client/shared/google/picker/openPicker.js"() {
+    "frontend/picker/openPicker.js"() {
       init_loadGoogleApis();
       init_tokenClient();
     }
   });
 
-  // client/shared/google/index.js
+  // frontend/index.js
   var init_google = __esm({
-    "client/shared/google/index.js"() {
+    "frontend/index.js"() {
       init_openPicker();
     }
   });

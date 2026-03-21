@@ -6,7 +6,7 @@ const path = require('path');
 const {
   createGoogleRouter,
   createFileTokenStore
-} = require('../app/shared/google');
+} = require('../backend');
 
 const app = express();
 

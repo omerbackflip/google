@@ -1,0 +1,15 @@
+in the root 
+npm run dev
+it says "Google sandbox server is running on port 3010"
+
+
+Open browser:
+http://localhost:3010
+You should see:
+{ "message": "Google sandbox backend is running" }
+
+
+
+Now open the sandbox UI, Go to:
+http://localhost:3010/sandbox/index.html
+This is your frontend test page.

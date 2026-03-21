@@ -1,4 +1,4 @@
-import { openPicker } from '../../client/shared/google/index.js';
+import { openPicker } from '../../frontend/index.js';
 
 const resultEl = document.getElementById('result');
 const button = document.getElementById('pick-file-btn');
