@@ -1,0 +1,21 @@
+{
+  "name": "google",
+  "version": "1.0.0",
+  "description": "Reusable Google API + Picker module for Node.js + Vue 2 apps (Book, Diary, Shlomi)",
+  "main": "app/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "sandbox": "node sandbox/server.js",
+    "sandbox:client:build": "esbuild sandbox/client/picker-test.js --bundle --platform=browser --outfile=sandbox/client/dist/picker-test.js",
+    "sandbox:client:watch": "esbuild sandbox/client/picker-test.js --bundle --platform=browser --outfile=sandbox/client/dist/picker-test.js --watch"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "googleapis": "^135.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.4"
+  }
+}

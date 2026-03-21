@@ -1,0 +1,4 @@
+node_modules/
+.env
+google_token.json
+sandbox/google_token.json
