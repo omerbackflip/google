@@ -2,16 +2,32 @@ let gisScriptPromise = null;
 let gapiScriptPromise = null;
 let pickerApiPromise = null;
 
-function loadScript(src) {
+function loadScript(src, isReady) {
+  if (isReady()) {
+    return Promise.resolve();
+  }
+
   return new Promise((resolve, reject) => {
     const existing = document.querySelector(`script[src="${src}"]`);
+
     if (existing) {
-      if (existing.dataset.loaded === 'true') {
-        resolve();
+      const checkReady = () => {
+        if (isReady()) {
+          resolve();
+          return true;
+        }
+        return false;
+      };
+
+      if (checkReady()) {
         return;
       }
 
-      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('load', () => {
+        if (checkReady()) return;
+        resolve();
+      }, { once: true });
+
       existing.addEventListener('error', reject, { once: true });
       return;
     }
@@ -22,7 +38,6 @@ function loadScript(src) {
     script.defer = true;
 
     script.onload = () => {
-      script.dataset.loaded = 'true';
       resolve();
     };
 
@@ -33,14 +48,20 @@ function loadScript(src) {
 
 function loadGisScript() {
   if (!gisScriptPromise) {
-    gisScriptPromise = loadScript('https://accounts.google.com/gsi/client');
+    gisScriptPromise = loadScript(
+      'https://accounts.google.com/gsi/client',
+      () => !!(window.google && window.google.accounts && window.google.accounts.oauth2)
+    );
   }
   return gisScriptPromise;
 }
 
 function loadGapiScript() {
   if (!gapiScriptPromise) {
-    gapiScriptPromise = loadScript('https://apis.google.com/js/api.js');
+    gapiScriptPromise = loadScript(
+      'https://apis.google.com/js/api.js',
+      () => !!window.gapi
+    );
   }
   return gapiScriptPromise;
 }
@@ -49,6 +70,10 @@ async function loadPickerApi() {
   if (!pickerApiPromise) {
     pickerApiPromise = (async () => {
       await loadGapiScript();
+
+      if (window.google && window.google.picker) {
+        return;
+      }
 
       await new Promise((resolve, reject) => {
         window.gapi.load('picker', {
