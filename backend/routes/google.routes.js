@@ -43,6 +43,35 @@ function createGoogleRouter(config) {
     oAuth2Client.setCredentials(latestTokens);
   }
 
+  async function ensureFreshAccessToken() {
+    refreshCredentialsFromStore();
+
+    const currentTokens = oAuth2Client.credentials || {};
+    const now = Date.now();
+
+    if (currentTokens.access_token && currentTokens.expiry_date && now < currentTokens.expiry_date - 60000) {
+      return currentTokens.access_token;
+    }
+
+    const refreshed = await oAuth2Client.refreshAccessToken();
+    const newTokens = refreshed.credentials || refreshed.tokens || {};
+
+    const mergedTokens = {
+      ...tokenStore.load(),
+      ...oAuth2Client.credentials,
+      ...newTokens
+    };
+
+    oAuth2Client.setCredentials(mergedTokens);
+    tokenStore.save(mergedTokens);
+
+    if (!mergedTokens.access_token) {
+      throw new Error('Could not obtain Google access token');
+    }
+
+    return mergedTokens.access_token;
+  }
+
   router.get('/auth', (req, res) => {
     const url = generateAuthUrl(oAuth2Client, getScopes(scopes));
     return res.redirect(url);
@@ -74,6 +103,27 @@ function createGoogleRouter(config) {
       connected: Boolean(tokens),
       tokenPath: typeof tokenStore.getPath === 'function' ? tokenStore.getPath() : null
     });
+  });
+
+  router.get('/picker-token', async (req, res) => {
+    try {
+      const accessToken = await ensureFreshAccessToken();
+
+      return res.json({
+        success: true,
+        connected: true,
+        access_token: accessToken
+      });
+    } catch (error) {
+      console.error('Google picker-token error:', error);
+
+      return res.status(401).json({
+        success: false,
+        connected: false,
+        error: error.message || 'Google is not connected',
+        authUrl: '/api/google/auth'
+      });
+    }
   });
 
   router.post('/upload-text', async (req, res) => {

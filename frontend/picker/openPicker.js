@@ -16,6 +16,7 @@ async function openPicker(config = {}) {
     apiKey,
     appId,
     scope,
+    accessToken: providedAccessToken,
     viewMimeTypes,
     multiselect = false
   } = config;
@@ -26,7 +27,8 @@ async function openPicker(config = {}) {
   if (!scope) throw new Error('Missing Google scope');
 
   await loadGoogleApis();
-  const accessToken = await requestAccessToken({ clientId, scope });
+
+  const accessToken = providedAccessToken || await requestAccessToken({ clientId, scope });
 
   return new Promise((resolve, reject) => {
     const view = new window.google.picker.DocsView(window.google.picker.ViewId.DOCS);
