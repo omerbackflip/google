@@ -18,7 +18,9 @@ async function openPicker(config = {}) {
     scope,
     accessToken: providedAccessToken,
     viewMimeTypes,
-    multiselect = false
+    multiselect = false,
+    folderId = null,
+    includeFolders = true
   } = config;
 
   if (!clientId) throw new Error('Missing Google clientId');
@@ -35,6 +37,12 @@ async function openPicker(config = {}) {
 
     if (viewMimeTypes) {
       view.setMimeTypes(viewMimeTypes);
+    }
+
+    view.setIncludeFolders(includeFolders);
+
+    if (folderId) {
+      view.setParent(folderId);
     }
 
     const pickerBuilder = new window.google.picker.PickerBuilder()

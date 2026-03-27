@@ -5,7 +5,9 @@ import { getGoogleConfig } from '../config';
 async function pickGoogleDriveFile(options = {}) {
   const {
     viewMimeTypes,
-    multiselect = false
+    multiselect = false,
+    folderId = null,
+    includeFolders = true,
   } = options;
 
   const {
@@ -34,7 +36,9 @@ async function pickGoogleDriveFile(options = {}) {
     scope,
     accessToken: response.data.access_token,
     viewMimeTypes,
-    multiselect
+    multiselect,
+    folderId,
+    includeFolders,
   });
 }
 
