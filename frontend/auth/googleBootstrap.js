@@ -1,8 +1,6 @@
-import SpecificServiceEndPoints from "../services/specificServiceEndPoints";
-
-export async function initializeGoogleOnAppLoad(setMenuItemCallback = null) {
+export async function initializeGoogleOnAppLoad(getGoogleConnectionStatus, setMenuItemCallback = null) {
     try {
-        const response = await SpecificServiceEndPoints.getGoogleConnectionStatus();
+        const response = await getGoogleConnectionStatus();
         const data = response?.data || {};
 
         if (data.connected) {
