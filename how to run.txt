@@ -1,5 +1,5 @@
 in the root 
-npm run dev
+npm run sandbox
 it says "Google sandbox server is running on port 3010"
 
 
